@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../partials/head'); %>
+  </head>
+  <body class="container">
+    <div
+      class="col-md-6 offset-md-3 centered-div d-flex align-items-center flex-column"
+    >
+      <%- include('../partials/header'); %>
+      <div class="jumbotron main d-flex align-items-center flex-column">
+        <div class="d-flex align-items-center flex-column">
+          <p>
+            With this app, you can set up an auto-reply message for your Gmail
+            account for new incoming mails. You can also add a Calendly link to
+            your auto-reply message to schedule meetings.
+          </p>
+        </div>
+        <div class="google-btn" onclick="signInWithGoogle()">
+          <div class="google-icon-wrapper">
+            <img
+              class="google-icon"
+              src="https://img.icons8.com/color/16/000000/google-logo.png"
+            />
+          </div>
+          <p class="btn-text"><b>Sign in with Google</b></p>
+        </div>
+      </div>
+      <%- include('../partials/footer'); %>
+    </div>
+    <%- include('../scripts'); %>
+  </body>
+</html>

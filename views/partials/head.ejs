@@ -1,0 +1,118 @@
+<meta charset="UTF-8" />
+<title>Inbox</title>
+
+<!-- CSS (load bootstrap from a CDN) -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css"
+/>
+<style>
+  body {
+    padding-top: 50px;
+  }
+
+  .centered-div {
+    overflow: hidden;
+    border-radius: 10px;
+    padding: 0px !important;
+  }
+
+  .main {
+    padding: 20px !important;
+    margin: 0px !important;
+  }
+
+  .information {
+    width: 100%;
+  }
+
+  .title {
+    background-color: #4285f4;
+    color: white;
+    padding: 10px 0px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .footer {
+    padding: 5px 0px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #6c747c;
+    color: white;
+  }
+
+  a {
+    color: white;
+    text-decoration: underline;
+  }
+
+  .form-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 218px;
+  }
+
+  .alert {
+    display: none;
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    padding: 10px 20px;
+    border-radius: 5px;
+  }
+  .alert.success {
+    background-color: #dff0d8;
+    color: #3c763d;
+    border: 1px solid #d0e9c6;
+  }
+  .alert.error {
+    background-color: #f2dede;
+    color: #a94442;
+    border: 1px solid #ebccd1;
+  }
+  .google-btn {
+    width: 195px;
+    height: 42px;
+    background-color: #4285f4;
+    border-radius: 2px;
+    box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    .google-icon-wrapper {
+      position: absolute;
+      margin-top: 1px;
+      margin-left: 1px;
+      width: 40px;
+      height: 40px;
+      border-radius: 2px;
+      background-color: #fff;
+    }
+    .google-icon {
+      position: absolute;
+      margin-top: 11px;
+      margin-left: 11px;
+      width: 18px;
+      height: 18px;
+    }
+    .btn-text {
+      float: right;
+      margin: 11px 11px 0 0;
+      color: #fff;
+      font-size: 14px;
+      letter-spacing: 0.2px;
+    }
+    &:hover {
+      box-shadow: 0 0 6px #4285f4;
+    }
+    &:active {
+      background: #1669f2;
+    }
+  }
+</style>

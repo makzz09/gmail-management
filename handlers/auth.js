@@ -21,7 +21,7 @@ const auth = async (req, res) => {
       access_type: "offline",
       scope: Scopes,
     });
-    res.redirect(authUrl);
+    return res.status(200).send(authUrl);
   } catch (error) {
     console.log("error while authenticating gmail", error);
     return res.status(500).json({ error: error.message });
@@ -66,15 +66,16 @@ const authCallback = async (req, res) => {
         ...oldData,
         ["tokens"]: tokens,
         ["name"]: data.name,
+        ["picture"]: data.picture,
       },
     };
 
     saveFileContent(JSON.stringify(updatedFileContent));
     await createLabels(oAuth2Client, updatedFileContent, data.email);
 
-    res
-      .status(200)
-      .json({ message: "Authentication successful", email: data.email });
+    return res.redirect(
+      `/information?email=${data.email}&calendlyLink=${oldData.calendlyLink}&isWatching=${oldData.isWatching}`
+    );
   } catch (error) {
     console.log("error while authenticating gmail", error);
     return res.status(500).json({ error: error.message });
