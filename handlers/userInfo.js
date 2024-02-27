@@ -1,6 +1,6 @@
 const { fetchFileContent } = require("../utils/fileAction");
 
-const information = async (req, res) => {
+const userInfo = async (req, res) => {
   const { email } = req.query;
 
   if (!email) {
@@ -20,9 +20,13 @@ const information = async (req, res) => {
     return res.redirect("/");
   }
 
+  if (userDetail.refreshTokenError) {
+    return res.redirect("/");
+  }
+
   const { calendlyLink, isWatching, picture } = userDetail;
 
-  res.render("pages/information", {
+  res.render("pages/user", {
     email,
     calendlyLink,
     isWatching,
@@ -31,5 +35,5 @@ const information = async (req, res) => {
 };
 
 module.exports = {
-  information,
+  userInfo,
 };

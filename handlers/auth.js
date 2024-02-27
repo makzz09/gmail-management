@@ -31,7 +31,11 @@ const auth = async (req, res) => {
 // Callback endpoint
 const authCallback = async (req, res) => {
   try {
-    const { code } = req.query;
+    const { code, error } = req.query;
+
+    if (error) {
+      return res.redirect("/");
+    }
 
     if (!code) {
       return res.status(400).json({ error: "Invalid request" });
@@ -64,9 +68,15 @@ const authCallback = async (req, res) => {
       ...parsedFileContent,
       [data.email]: {
         ...oldData,
-        ["tokens"]: tokens,
+        ["tokens"]: {
+          ...tokens,
+          refresh_token: tokens.refresh_token
+            ? tokens.refresh_token
+            : oldData.tokens?.refresh_token,
+        },
         ["name"]: data.name,
         ["picture"]: data.picture,
+        ["refreshTokenError"]: false,
       },
     };
 
@@ -74,7 +84,7 @@ const authCallback = async (req, res) => {
     await createLabels(oAuth2Client, updatedFileContent, data.email);
 
     return res.redirect(
-      `/information?email=${data.email}&calendlyLink=${oldData.calendlyLink}&isWatching=${oldData.isWatching}`
+      `/user?email=${data.email}&calendlyLink=${oldData.calendlyLink}&isWatching=${oldData.isWatching}`
     );
   } catch (error) {
     console.log("error while authenticating gmail", error);

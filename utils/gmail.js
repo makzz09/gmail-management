@@ -11,9 +11,9 @@ const getAuthenticatedGmail = async (email) => {
 
     const parsedFileContent = JSON.parse(fileContent);
 
-    const useDetails = parsedFileContent[email];
+    const userDetails = parsedFileContent[email];
 
-    if (!useDetails || !useDetails.tokens) {
+    if (!userDetails || !userDetails.tokens) {
       throw new Error("No tokens found for the user");
     }
 
@@ -23,24 +23,39 @@ const getAuthenticatedGmail = async (email) => {
       redirect_uri
     );
 
-    oAuth2Client.setCredentials(useDetails.tokens);
+    oAuth2Client.setCredentials(userDetails.tokens);
 
     if (oAuth2Client.isTokenExpiring()) {
-      console.log("refreshing token for user", email);
-      const response = await oAuth2Client.refreshAccessToken();
+      try {
+        console.log("refreshing token for user", email);
+        const response = await oAuth2Client.refreshAccessToken();
 
-      oAuth2Client.setCredentials(response.credentials);
+        oAuth2Client.setCredentials(response.credentials);
 
-      const updatedFileContent = {
-        ...parsedFileContent,
-        [email]: {
-          ...useDetails,
-          ["tokens"]: response.credentials,
-        },
-      };
+        const updatedFileContent = {
+          ...parsedFileContent,
+          [email]: {
+            ...userDetails,
+            ["tokens"]: response.credentials,
+          },
+        };
 
-      saveFileContent(JSON.stringify(updatedFileContent));
-      console.log("token refreshed for user", email);
+        saveFileContent(JSON.stringify(updatedFileContent));
+        console.log("token refreshed for user", email);
+      } catch (error) {
+        console.log("error while refreshing token for email", email);
+
+        const updatedFileContent = {
+          ...parsedFileContent,
+          [email]: {
+            ...useDetails,
+            ["refreshTokenError"]: true,
+          },
+        };
+
+        saveFileContent(JSON.stringify(updatedFileContent));
+        throw error;
+      }
     }
 
     return google.gmail({ version: "v1", auth: oAuth2Client });
