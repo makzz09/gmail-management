@@ -1,0 +1,20 @@
+{
+  "xyz@gmail.com": {
+    "tokens": {
+      "access_token": "<access_token>",
+      "scope": "https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.labels openid https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+      "token_type": "Bearer",
+      "id_token": "<id_token>",
+      "refresh_token": "<refresh_token>",
+      "expiry_date": 1709049770554
+    },
+    "name": "XYZ",
+    "picture": "<profile_picture>",
+    "refreshTokenError": false,
+    "labels": {
+      "positive": "Label_1",
+      "neutral": "Label_2",
+      "negative": "Label_3"
+    }
+  }
+}
