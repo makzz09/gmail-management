@@ -77,7 +77,31 @@ const stopWatch = async (req, res) => {
   }
 };
 
+const toggleReplyType = async (req, res) => {
+  try {
+    const value = req.query.value || false;
+    const fileContent = req.parsedFileContent;
+    const userDetail = fileContent[req.query.email] || {};
+
+    const updatedFileContent = {
+      ...fileContent,
+      [req.query.email]: {
+        ...userDetail,
+        draftMail: value === "true" ? true : false,
+      },
+    };
+
+    saveFileContent(JSON.stringify(updatedFileContent));
+
+    return res.status(200).json({ message: "reply type toggled" });
+  } catch (error) {
+    console.log("error while toggling reply type", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   startWatch,
   stopWatch,
+  toggleReplyType,
 };

@@ -4,7 +4,11 @@ const dotenv = require("dotenv");
 const { auth, authCallback } = require("./handlers/auth");
 const { userInfo } = require("./handlers/userInfo");
 const { isLoggedIn } = require("./middlerware/middlewares");
-const { startWatch, stopWatch } = require("./handlers/watcher");
+const {
+  startWatch,
+  stopWatch,
+  toggleReplyType,
+} = require("./handlers/watcher");
 const { addCalendly } = require("./handlers/calendly");
 const cronJob = require("./utils/cronJob");
 const { notification } = require("./handlers/notification");
@@ -33,6 +37,7 @@ app.get("/auth/callback", authCallback);
 app.get("/watch", isLoggedIn, startWatch);
 app.get("/stopwatch", isLoggedIn, stopWatch);
 app.post("/calendly", isLoggedIn, addCalendly);
+app.get("/toggle", isLoggedIn, toggleReplyType);
 
 // Webhook route
 app.post("/notification", notification);

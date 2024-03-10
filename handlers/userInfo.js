@@ -24,13 +24,14 @@ const userInfo = async (req, res) => {
     return res.redirect("/");
   }
 
-  const { calendlyLink, isWatching, picture } = userDetail;
+  const { calendlyLink, isWatching, picture, draftMail } = userDetail;
 
   res.render("pages/user", {
     email,
     calendlyLink,
     isWatching,
     picture,
+    draftMail,
   });
 };
 

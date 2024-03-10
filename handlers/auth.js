@@ -77,6 +77,7 @@ const authCallback = async (req, res) => {
         ["name"]: data.name,
         ["picture"]: data.picture,
         ["refreshTokenError"]: false,
+        ["draftMail"]: false,
       },
     };
 

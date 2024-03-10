@@ -1,146 +1,173 @@
 <script>
-    function showAlert(message, type) {
-      const alertDiv = document.getElementById("alert");
-      alertDiv.textContent = message;
-      alertDiv.className = "alert " + type;
-      alertDiv.style.display = "block";
+  function showAlert(message, type) {
+    const alertDiv = document.getElementById("alert");
+    alertDiv.textContent = message;
+    alertDiv.className = "alert " + type;
+    alertDiv.style.display = "block";
 
+    setTimeout(() => {
+      alertDiv.style.opacity = "0";
       setTimeout(() => {
-        alertDiv.style.opacity = "0";
-        setTimeout(() => {
-          alertDiv.style.display = "none";
-          alertDiv.style.opacity = "1";
-        }, 1000);
-      }, 2000);
-    }
-  </script>
-  <script>
-    function getQueryParameter(name) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(name);
-    }
-  
-    function updateButtonStates() {
-      const isWatching = getQueryParameter("isWatching");
-      if (isWatching === "true") {
-        document.getElementById("start-watch").disabled = true;
-        document.getElementById("stop-watch").disabled = false;
-      } else {
-        document.getElementById("start-watch").disabled = false;
-        document.getElementById("stop-watch").disabled = true;
-      }
-    }
-  
-    function updateLinkField() {
-      const link = getQueryParameter("calendlyLink");
-      if (link) {
-        document.getElementById("link").value = link;
-      }
-    }
-  
-    updateButtonStates();
-  </script>
-  <script>
-    function signInWithGoogle() {
-      fetch("/auth", {
-        method: "POST",
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.text().then((url) => {
-              window.location.href = url;
-            });
-          } else {
-            console.error("Error:", response.statusText);
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    }
-  </script>
-  <script>
-    function addCalendlyLink(event, email, link) {
-      event.preventDefault();
-      document.getElementById("submit-link").disabled = true;
-  
-      fetch(`/calendly?email=${email}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ calendlyLink: link }),
-      })
-        .then((response) => {
-          if (response.status === 200) {
-            const urlParams = new URLSearchParams(window.location.search);
-            urlParams.set("calendlyLink", link);
-            const newUrl = window.location.pathname + "?" + urlParams.toString();
-            window.history.replaceState({}, "", newUrl);
-            updateLinkField();
-            showAlert("Calendly link added successfully", "success");
-          } else {
-            console.error("Error:", response.statusText);
-            showAlert("Error adding Calendly link", "error");
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          showAlert("Error adding Calendly link", "error");
-        })
-        .finally(() => {
-          document.getElementById("submit-link").disabled = false;
-        });
-    }
-  </script>
-  <script>
-    function startWatch(email) {
+        alertDiv.style.display = "none";
+        alertDiv.style.opacity = "1";
+      }, 1000);
+    }, 2000);
+  }
+</script>
+<script>
+  function getQueryParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  function updateButtonStates() {
+    const isWatching = getQueryParameter("isWatching");
+    if (isWatching === "true") {
       document.getElementById("start-watch").disabled = true;
-      fetch(`/watch?email=${email}`, {
-        method: "GET",
-      })
-        .then((response) => {
-          if (response.status === 200) {
-            const urlParams = new URLSearchParams(window.location.search);
-            urlParams.set("isWatching", "true");
-            const newUrl = window.location.pathname + "?" + urlParams.toString();
-            window.history.replaceState({}, "", newUrl);
-            updateButtonStates();
-            showAlert("Started watching", "success");
-          } else {
-            console.error("Error:", response.statusText);
-            showAlert("Error starting watch", "error");
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          showAlert("Error starting watch", "error");
-        });
-    }
-  </script>
-  <script>
-    function stopWatch(email) {
+      document.getElementById("stop-watch").disabled = false;
+    } else {
+      document.getElementById("start-watch").disabled = false;
       document.getElementById("stop-watch").disabled = true;
-      fetch(`/stopwatch?email=${email}`, {
-        method: "GET",
-      })
-        .then((response) => {
-          if (response.ok) {
-            const urlParams = new URLSearchParams(window.location.search);
-            urlParams.set("isWatching", "false");
-            const newUrl = window.location.pathname + "?" + urlParams.toString();
-            window.history.replaceState({}, "", newUrl);
-            updateButtonStates();
-            showAlert("Stopped watching", "success");
-          } else {
-            console.error("Error:", response.statusText);
-            showAlert("Error stopping watch", "error");
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          showAlert("Error stopping watch", "error");
-        });
     }
-  </script>
-  
+  }
+
+  function updateLinkField() {
+    const link = getQueryParameter("calendlyLink");
+    if (link) {
+      document.getElementById("link").value = link;
+    }
+  }
+
+  updateButtonStates();
+</script>
+<script>
+  function signInWithGoogle() {
+    fetch("/auth", {
+      method: "POST",
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.text().then((url) => {
+            window.location.href = url;
+          });
+        } else {
+          console.error("Error:", response.statusText);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+</script>
+<script>
+  function addCalendlyLink(event, email, link) {
+    event.preventDefault();
+    document.getElementById("submit-link").disabled = true;
+
+    fetch(`/calendly?email=${email}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ calendlyLink: link }),
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          const urlParams = new URLSearchParams(window.location.search);
+          urlParams.set("calendlyLink", link);
+          const newUrl = window.location.pathname + "?" + urlParams.toString();
+          window.history.replaceState({}, "", newUrl);
+          updateLinkField();
+          showAlert("Calendly link added successfully", "success");
+        } else {
+          console.error("Error:", response.statusText);
+          showAlert("Error adding Calendly link", "error");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        showAlert("Error adding Calendly link", "error");
+      })
+      .finally(() => {
+        document.getElementById("submit-link").disabled = false;
+      });
+  }
+</script>
+<script>
+  function startWatch(email) {
+    document.getElementById("start-watch").disabled = true;
+    fetch(`/watch?email=${email}`, {
+      method: "GET",
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          const urlParams = new URLSearchParams(window.location.search);
+          urlParams.set("isWatching", "true");
+          const newUrl = window.location.pathname + "?" + urlParams.toString();
+          window.history.replaceState({}, "", newUrl);
+          updateButtonStates();
+          showAlert("Started watching", "success");
+        } else {
+          console.error("Error:", response.statusText);
+          showAlert("Error starting watch", "error");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        showAlert("Error starting watch", "error");
+      });
+  }
+</script>
+<script>
+  function stopWatch(email) {
+    document.getElementById("stop-watch").disabled = true;
+    fetch(`/stopwatch?email=${email}`, {
+      method: "GET",
+    })
+      .then((response) => {
+        if (response.ok) {
+          const urlParams = new URLSearchParams(window.location.search);
+          urlParams.set("isWatching", "false");
+          const newUrl = window.location.pathname + "?" + urlParams.toString();
+          window.history.replaceState({}, "", newUrl);
+          updateButtonStates();
+          showAlert("Stopped watching", "success");
+        } else {
+          console.error("Error:", response.statusText);
+          showAlert("Error stopping watch", "error");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        showAlert("Error stopping watch", "error");
+      });
+  }
+</script>
+<script>
+  function toggleType(email) {
+    document.getElementById("toggle-type-box").disabled = true;
+    const isChecked = document.getElementById("toggle-type-box").checked;
+    fetch(`/toggle?email=${email}&value=${isChecked}`, {
+      method: "GET",
+    })
+      .then((response) => {
+        if (response.ok) {
+          const urlParams = new URLSearchParams(window.location.search);
+          urlParams.set("draftMail", isChecked);
+          const newUrl = window.location.pathname + "?" + urlParams.toString();
+          window.history.replaceState({}, "", newUrl);
+          updateButtonStates();
+          showAlert("Toggled Reply Type", "success");
+        } else {
+          console.error("Error:", response.statusText);
+          showAlert("Error Toggled Reply Type", "error");
+        }
+        document.getElementById("toggle-type-box").disabled = false;
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        showAlert("Error stopping watch", "error");
+        document.getElementById("toggle-type-box").disabled = false;
+      });
+  }
+</script>

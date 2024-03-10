@@ -22,8 +22,10 @@ const attachLabels = async (
 
     const sentiment = await analyzeEmail(email.snippet);
 
-    let labelId = null;
-    labelId = getLabelId(userEmail, sentiment.toLowerCase());
+    let { labelId, draftMail } = getUserPref(
+      userEmail,
+      sentiment.toLowerCase()
+    );
 
     if (labelId) {
       await authenticatedGmail.users.messages.modify({
@@ -42,7 +44,8 @@ const attachLabels = async (
         fromMailAddress,
         email,
         sentiment,
-        userEmail
+        userEmail,
+        draftMail
       );
     }
     return true;
@@ -130,7 +133,7 @@ const analyzeEmail = async (text) => {
   }
 };
 
-const getLabelId = (currentUser, sentiment) => {
+const getUserPref = (currentUser, sentiment) => {
   try {
     const fileContent = fetchFileContent();
     const parsedFileContent = JSON.parse(fileContent);
@@ -138,13 +141,18 @@ const getLabelId = (currentUser, sentiment) => {
     const userDetail = parsedFileContent[currentUser] || {};
     const labels = userDetail?.labels;
 
+    let labelId = null;
+    const draftMail = userDetail?.draftMail || false;
+
     if (sentiment === "positive") {
-      return labels["positive"];
+      labelId = labels["positive"];
     } else if (sentiment === "neutral") {
-      return labels["neutral"];
+      labelId = labels["neutral"];
     } else if (sentiment === "negative") {
-      return labels["negative"];
+      labelId = labels["negative"];
     }
+
+    return { labelId, draftMail };
   } catch (error) {
     console.log("error while getting label id", error);
     throw error;
@@ -157,7 +165,8 @@ const addReplyMessage = async (
   fromMail,
   email,
   scenario,
-  userEmail
+  userEmail,
+  draftMail = false
 ) => {
   try {
     const emailText = await generateReplyText(scenario, email, userEmail);
@@ -165,19 +174,37 @@ const addReplyMessage = async (
     const replyContent = `To: ${fromMail}\n${emailText}`;
     const encodedReply = Buffer.from(replyContent).toString("base64");
 
-    const message = {
-      userId: "me",
-      resource: {
-        raw: encodedReply,
-        threadId: threadId,
-      },
-    };
+    if (draftMail) {
+      const draft = {
+        userId: "me",
+        resource: {
+          message: {
+            raw: encodedReply,
+            threadId: threadId,
+          },
+        },
+      };
 
-    const response = await authenticatedGmail.users.messages.send(message);
+      const response = await authenticatedGmail.users.drafts.create(draft);
 
-    const replyId = response.data.id;
+      const draftId = response.data.id;
 
-    return replyId;
+      return draftId;
+    } else {
+      const message = {
+        userId: "me",
+        resource: {
+          raw: encodedReply,
+          threadId: threadId,
+        },
+      };
+
+      const response = await authenticatedGmail.users.messages.send(message);
+
+      const replyId = response.data.id;
+
+      return replyId;
+    }
   } catch (error) {
     console.log("error while adding reply message", error);
     throw error;
